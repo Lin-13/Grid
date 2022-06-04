@@ -7,7 +7,7 @@ def calcV1(R):
     return nlp.calcV_2d(grid1,x,y,theta)
 print(calcV1([1,1,-0.5]))
 #非线性方法
-a=opt.fmin(calcV1,[0,4,5])
+a=opt.fmin(calcV1,[0,0,0])
 
 print(a)
 #线性方法
