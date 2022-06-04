@@ -10,5 +10,8 @@ def calcV(Grid:gb2d.Grid,x,y,theta)->float:#刚体位移广义坐标
         old=np.array([[anchor.x],[anchor.y]],dtype=np.float64)
         new=np.dot(rotate_mat,old)+np.array([[x],[y]],dtype=np.float64)
         delta=new-old
-        V=V+np.dot(delta.T,np.dot(K,delta))
+        grid_loadMat=Grid.calc_loadMat()
+        V_load=-np.dot(grid_loadMat.T,np.array([[x],[y],[theta]]))
+        V=V+np.dot(delta.T,np.dot(K,delta))+V_load
+        
     return V
