@@ -56,23 +56,30 @@ class Grid:
             self.J=0
         else:
             raise Exception('mode accept simple not supported till now')
-    def __init__(self):
+    def __init__(self,mode='auto') -> None:
         self.anchors=list()
         self.center=[0,0]
-        self.m=0
-        self.J=0
+        self.mode=mode
+        if mode=='auto' or mode=='manual':
+            self.m=0
+            self.J=0
+        else:
+            raise Exception('mode manual not implemented')
         self.coef_matrix=list()
         self.cnt=0
     def __calcCenter(self):
-        sum_x=0
-        sum_y=0
-        cnt=0
-        for i in self.anchors:
-            sum_x=sum_x+i.x
-            sum_y=sum_y+i.y
-            cnt=cnt+1
-        self.center[0]=sum_x/cnt
-        self.center[1]=sum_y/cnt
+        if self.mode=='auto':
+            sum_x=0
+            sum_y=0
+            cnt=0
+            for i in self.anchors:
+                sum_x=sum_x+i.x
+                sum_y=sum_y+i.y
+                cnt=cnt+1
+            self.center[0]=sum_x/cnt
+            self.center[1]=sum_y/cnt
+        else:
+            self.center[0],self.center[1]=0,0
     # 计算系数矩阵C,[Fx,Fy,Mc]=C*[x,y,theta]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
@@ -90,6 +97,11 @@ class Grid:
     def remove_anchor(self,anchor:anchor) -> None:
         self.anchors.remove(anchor)
         self.__calcCenter()
+        self.__clacCoefMatrix()
+    def setCenter(self,x:float,y:float) -> None:
+        self.center[0]=x
+        self.center[1]=y
+        self.mode='manual'
         self.__clacCoefMatrix()
     def calc(self,arr:np.array)->np.array:
         return np.dot(self.coef,arr)

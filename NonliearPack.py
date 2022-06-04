@@ -15,7 +15,7 @@ def calcV_2d(Grid:gb2d.Grid,x,y,theta)->float:
         V_load=-np.dot(grid_loadMat.T,np.array([[x],[y],[theta]]))
         V=V+np.dot(delta.T,np.dot(K,delta))+V_load
     return V
-
+#刚体位移广义坐标,3d
 def calcV_3d(Grid:gb3d.Grid,x,y,z,alpha,beta,gamma)->float:
     V=0
     for anchor in Grid.anchors:
@@ -38,7 +38,7 @@ def calcV_3d(Grid:gb3d.Grid,x,y,z,alpha,beta,gamma)->float:
             np.array([[x],[y],[z],[alpha],[beta],[gamma]]))
         V=V+np.dot(delta.T,np.dot(K,delta))+V_load
     return V
-#计算梯度
+#梯度,2d
 def gradV_2d(Grid:gb2d,x=0,y=0,theta=0,params=None,step=0.001):
     if params is None:
         param=[x,y,theta]
@@ -70,7 +70,7 @@ def gradV_3d(Grid:gb2d,x=0,y=0,z=0,alpha=0,beta=0,gamma=0,params=None,step=0.001
     return gradV    
         
 #根据初始状态计算下一个时间点的状态    
-def next_frame(Grid:gb2d.Grid,init_frame:np.array,t=0.01,step=0.001):
+def next_frame_2d(Grid:gb2d.Grid,init_frame:np.array,t=0.01,step=0.001):
     next=init_frame
     F=gradV_2d(Grid,param=init_frame,step=step)
     a=[0,0,0]

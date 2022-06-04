@@ -59,31 +59,34 @@ class Grid:
         self.mode=mode
         self.__calcCenter()
         self.__clacCoefMatrix()
-        if mode=='simple':
+        if mode=='auto' or mode=='manual':
             self.m=0
             self.J=0
         else:
-            raise Exception('mode accept simple not supported till now')
+            raise Exception('mode manual not implemented')
     def __init__(self):
         self.anchors=list()
         self.center=[0,0,0]
+        self.mode='auto'
         self.m=0
         self.J=0
         self.coef_matrix=list()
         self.cnt=0
     def __calcCenter(self):
-        sum_x=0
-        sum_y=0
-        sum_z=0
-        cnt=0
-        for i in self.anchors:
-            sum_x=sum_x+i.x
-            sum_y=sum_y+i.y
-            sum_z=sum_z+i.z
-            cnt=cnt+1
-        self.center[0]=sum_x/cnt
-        self.center[1]=sum_y/cnt
-        self.center[2]=sum_z/cnt
+        if self.mode=='auto':
+            sum_x=0
+            sum_z=0
+            cnt=0
+            for i in self.anchors:
+                sum_x=sum_x+i.x
+                sum_y=sum_y+i.y
+                sum_z=sum_z+i.z
+                cnt=cnt+1
+            self.center[0]=sum_x/cnt
+            self.center[1]=sum_y/cnt
+            self.center[2]=sum_z/cnt
+        else:
+            self.center[0],self.center[1],self.center[2]=0,0,0
     # 计算系数矩阵C:[Fx,Fy,Fz,Mcx,Mcy,Mcz]=C*[x,y,z,alpha,beta,gamma]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
@@ -110,7 +113,12 @@ class Grid:
         self.loadlist.append(load)   
     def remove_load(self,load:load) -> None:
         self.loadlist.remove(load) 
-      
+    def setCenter(self,x:float,y:float,z:float) -> None:
+        self.center[0]=x
+        self.center[1]=y
+        self.center[2]=z
+        self.mode='manual'
+        self.__clacCoefMatrix()
     def calc(self,arr:np.array)->np.array:
         return np.dot(self.coef,arr)
     def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
