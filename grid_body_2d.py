@@ -2,18 +2,21 @@ import numpy as np
 from pole2d import *
 # 定义二力杆与刚体的约束
 class load:
-    def __init__(self,m,x=0,y=0,theta=0,type='F'):
+    def __init__(self,m=0,x=0,y=0,theta=0,loadtype='F'):
         self.x=x
         self.y=y
         self.m=m
         self.theta=theta
-        self.type=type
-        if type=='F':
-            self.Fx=load.m*np.cos(load.theta)
-            self.Fy=load.m*np.sin(load.theta)
-        elif type=='M':
+        self.loadtype=loadtype
+        self.Fx,self.Fy=0,0
+        if loadtype=='F':
+            self.Fx=self.m*np.cos(self.theta)
+            self.Fy=self.m*np.sin(self.theta)
+        elif loadtype=='M':
             self.Fx=0
             self.Fy=0
+        else:
+            raise Exception('type accept F or M')
         return
 class anchor:
     
@@ -93,14 +96,15 @@ class Grid:
     def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((3,1),dtype=np.float64)
         for load in self.loadlist:
-            if load.mode=='F':
+            if load.loadtype=='F':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
                 loadMat[2]=(load.x-self.center[0])*load.Fy-(load.y-self.center[1])*load.Fx
-            elif load.mode=='M':
+            elif load.loadtype=='M':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
                 loadMat[2]=loadMat[2]+load.m
+        return loadMat
                 
     def print_anchors(self) -> None:
         for i in self.anchors:

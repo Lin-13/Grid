@@ -14,6 +14,13 @@ grid1.add_anchor(gb2d.anchor(1,0,[pole1,pole2,pole3,pole4]))
 grid1.print_anchors()
 grid1.print_coef()
 grid1.calc(np.array([0,0,0]))
+
+F1=gb2d.load(1,0,0,0,loadtype='F')
+M1=gb2d.load(1,loadtype='M')
+grid1.add_load(F1)
+grid1.add_load(M1)
+mat=grid1.calc_loadMat()#计算加载矩阵，[Fx,Fy,M]
+np.dot(np.linalg.inv(grid1.coef),mat)
 '''
 print(grid1.anchors[0].matrix.mat_K)
 print(grid1.anchors[0].matrix.mat_G)

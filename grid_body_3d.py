@@ -2,24 +2,26 @@
 import numpy as np
 import pole3d as pl3
 class load:
-    def __init__(self,m,x=0,y=0,z=0,theta=0,phi=0,type='F'):
+    def __init__(self,m,x=0,y=0,z=0,theta=0,phi=0,loadtype='F'):
         self.x=x
         self.y=y
         self.z=z
         self.m=m
         self.theta=theta
         self.phi=phi
-        self.type=type
-        if type=='F':
-            self.Fx=load.m*np.cos(load.phi)*np.cos(load.theta)
-            self.Fy=load.m*np.cos(load.phi)*np.sin(load.theta)
-            self.Fx=load.m*np.sin(load.phi)
+        self.loadtype=loadtype
+        if loadtype=='F':
+            self.Fx=self.m*np.cos(self.phi)*np.cos(self.theta)
+            self.Fy=self.m*np.cos(self.phi)*np.sin(self.theta)
+            self.Fx=self.m*np.sin(self.phi)
             self.Mx,self.My,self.Mz=0,0,0
-        elif type=='M':
+        elif loadtype=='M':
             self.Fx,self.Fy,self.Fz=0,0,0
-            self.Mx=load.m*np.cos(load.phi)*np.cos(load.theta)
-            self.My=load.m*np.cos(load.phi)*np.sin(load.theta)
-            self.Mz=load.m*np.sin(load.phi)
+            self.Mx=self.m*np.cos(self.phi)*np.cos(self.theta)
+            self.My=self.m*np.cos(self.phi)*np.sin(self.theta)
+            self.Mz=self.m*np.sin(self.phi)
+        else:
+            raise Exception('type accept F or M')
         return
 # 定义二力杆与刚体的约束
 class anchor:
@@ -114,18 +116,20 @@ class Grid:
     def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((6,1),dtype=np.float64)
         for load in self.loadlist:
-            if load.mode=='F':
+            load.loadtype
+            if load.loadtype=='F':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
                 loadMat[2]=loadMat[2]+load.Fz
                 loadMat[3]=loadMat[3]+load.Fz*(load.y-self.center[1])-load.Fx*(load.z-self.center[2])
                 loadMat[4]=loadMat[4]+load.Fx*(load.z-self.center[2])-load.Fz*(load.x-self.center[0])
                 loadMat[5]=loadMat[5]+load.Fy*(load.x-self.center[0])-load.Fx*(load.y-self.center[1])
-            elif load.mode=='M':
+            elif load.loadtype=='M':
                 loadMat[0],loadMat[1],loadMat[2]=0,0,0
                 loadMat[3]=loadMat[3]+load.Mx
                 loadMat[4]=loadMat[4]+load.My
                 loadMat[5]=loadMat[5]+load.Mz
+        return loadMat
      
     def print_anchors(self) -> None:
         for i in self.anchors:
