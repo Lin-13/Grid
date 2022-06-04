@@ -35,43 +35,27 @@ class anchor:
         def __init__(self) -> None:
             pass
     matrix=Matrix()
-    a=0
-    def __init__(self,x:float,y:float,z:float,poles:list,mode='xy'):
+    def __init__(self,x:float,y:float,z:float,poles:list):
         self.x=x
         self.y=y
         self.z=z
         self.poles=poles
-        self.mode=mode
-        if(self.mode=='xy'):
-            self.z=0
         self.matrix.mat_K=pl3.GenMatrix(self.poles)
 
 class Grid:
     anchors=list()
     loadlist=list()
-    center=[0,0]
+    center=[0,0,0]
     m=0
-    J=0
+    J=np.zeros((1,3))
     mode='auto'
     coef_matrix=list()
-    def __init__(self,anchors:list,mode='auto'):
+    def __init__(self,anchors:list):
         self.anchors=anchors
-        self.mode=mode
         self.__calcCenter()
         self.__clacCoefMatrix()
-        if mode=='auto' or mode=='manual':
-            self.m=0
-            self.J=0
-        else:
-            raise Exception('mode manual not implemented')
     def __init__(self):
-        self.anchors=list()
-        self.center=[0,0,0]
-        self.mode='auto'
-        self.m=0
-        self.J=0
-        self.coef_matrix=list()
-        self.cnt=0
+        pass
     def __calcCenter(self):
         if self.mode=='auto':
             sum_x=0
@@ -91,7 +75,7 @@ class Grid:
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
             anchor.matrix.mat_G=\
-                np.array([[1,0,0],                                                  #Fx
+                np.array([[1,0,0],                                                #Fx
                         [0,1,0],                                                  #Fy
                         [0,0,1],                                                  #Fz
                         [0,-anchor.z+self.center[2],anchor.y-self.center[1]],     #Mcx
@@ -100,23 +84,27 @@ class Grid:
                         dtype=np.float64)
         self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
         self.coef=np.sum(self.coef_matrix,axis=0)
-    def add_anchor(self,anchor:anchor) -> None:
+    def add_anchor(self,anchor:anchor):
         self.anchors.append(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def remove_anchor(self,anchor:anchor) -> None:
+    def remove_anchor(self,anchor:anchor):
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
         
-    def add_load(self,load:load) -> None:
+    def add_load(self,load:load):
         self.loadlist.append(load)   
-    def remove_load(self,load:load) -> None:
+    def remove_load(self,load:load):
         self.loadlist.remove(load) 
-    def setCenter(self,x:float,y:float,z:float) -> None:
+    def setCenter(self,x:float,y:float,z:float):
         self.center[0]=x
         self.center[1]=y
         self.center[2]=z
+        self.mode='manual'
+        self.__clacCoefMatrix()
+    def setJ(self,Jyz:float,Jzx:float,Jxy:float) -> None:
+        self.J=np.array([Jyz,Jzx,Jxy],dtype=np.float64)
         self.mode='manual'
         self.__clacCoefMatrix()
     def calc(self,arr:np.array)->np.array:

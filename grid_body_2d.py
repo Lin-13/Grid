@@ -30,13 +30,10 @@ class anchor:
             pass
     matrix=Matrix()
     a=0
-    def __init__(self,x:float,y:float,poles:list,mode='xy'):
+    def __init__(self,x:float,y:float,poles:list):
         self.x=x
         self.y=y
         self.poles=poles
-        self.mode=mode
-        if(self.mode=='xy'):
-            self.z=0
         self.matrix.mat_K=GenMatrix(self.poles)
 
 class Grid:
@@ -45,28 +42,14 @@ class Grid:
     center=[0,0]
     m=0
     J=0
+    mode='auto'
     coef_matrix=list()
-    def __init__(self,anchors:list,mode='auto'):
+    def __init__(self,anchors:list):
         self.anchors=anchors
-        self.mode=mode
         self.__calcCenter()
         self.__clacCoefMatrix()
-        if mode=='simple':
-            self.m=0
-            self.J=0
-        else:
-            raise Exception('mode accept simple not supported till now')
-    def __init__(self,mode='auto') -> None:
-        self.anchors=list()
-        self.center=[0,0]
-        self.mode=mode
-        if mode=='auto' or mode=='manual':
-            self.m=0
-            self.J=0
-        else:
-            raise Exception('mode manual not implemented')
-        self.coef_matrix=list()
-        self.cnt=0
+    def __init__(self):
+        pass
     def __calcCenter(self):
         if self.mode=='auto':
             sum_x=0
@@ -86,26 +69,28 @@ class Grid:
             anchor.matrix.mat_G=np.array([[1,0],[0,1],[-anchor.y+self.center[1],anchor.x-self.center[0]]],dtype=np.float64)
         self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
         self.coef=np.sum(self.coef_matrix,axis=0)
-    def add_anchor(self,anchor:anchor) -> None:
+    def add_anchor(self,anchor:anchor):
         self.anchors.append(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def add_load(self,load:load) -> None:
+    def add_load(self,load:load):
         self.loadlist.append(load)   
-    def remove_load(self,load:load) -> None:
+    def remove_load(self,load:load):
         self.loadlist.remove(load)   
-    def remove_anchor(self,anchor:anchor) -> None:
+    def remove_anchor(self,anchor:anchor):
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def setCenter(self,x:float,y:float) -> None:
+    def setCenter(self,x:float,y:float):
         self.center[0]=x
         self.center[1]=y
         self.mode='manual'
         self.__clacCoefMatrix()
-    def calc(self,arr:np.array)->np.array:
+    def setJ(self,J:float):
+        self.J=J
+    def calc(self,arr:np.array):
         return np.dot(self.coef,arr)
-    def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
+    def calc_loadMat(self): #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((3,1),dtype=np.float64)
         for load in self.loadlist:
             if load.loadtype=='F':
@@ -118,8 +103,8 @@ class Grid:
                 loadMat[2]=loadMat[2]+load.m
         return loadMat
                 
-    def print_anchors(self) -> None:
+    def print_anchors(self):
         for i in self.anchors:
             print("x={0},y={1},poles:{2}".format(i.x,i.y,i.poles))
-    def print_coef(self) -> None:
+    def print_coef(self):
         print(self.coef)
