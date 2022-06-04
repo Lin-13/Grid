@@ -1,6 +1,26 @@
 ## grid_body_3d.py
 import numpy as np
 import pole3d as pl3
+class load:
+    def __init__(self,m,x=0,y=0,z=0,theta=0,phi=0,type='F'):
+        self.x=x
+        self.y=y
+        self.z=z
+        self.m=m
+        self.theta=theta
+        self.phi=phi
+        self.type=type
+        if type=='F':
+            self.Fx=load.m*np.cos(load.phi)*np.cos(load.theta)
+            self.Fy=load.m*np.cos(load.phi)*np.sin(load.theta)
+            self.Fx=load.m*np.sin(load.phi)
+            self.Mx,self.My,self.Mz=0,0,0
+        elif type=='M':
+            self.Fx,self.Fy,self.Fz=0,0,0
+            self.Mx=load.m*np.cos(load.phi)*np.cos(load.theta)
+            self.My=load.m*np.cos(load.phi)*np.sin(load.theta)
+            self.Mz=load.m*np.sin(load.phi)
+        return
 # 定义二力杆与刚体的约束
 class anchor:
     
@@ -26,6 +46,7 @@ class anchor:
 
 class Grid:
     anchors=list()
+    loadlist=list()
     center=[0,0]
     m=0
     J=0
@@ -82,8 +103,30 @@ class Grid:
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
+        
+    def add_load(self,load:load) -> None:
+        self.loadlist.append(load)   
+    def remove_load(self,load:load) -> None:
+        self.loadlist.remove(load) 
+      
     def calc(self,arr:np.array)->np.array:
         return np.dot(self.coef,arr)
+    def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
+        loadMat=np.zeros((6,1),dtype=np.float64)
+        for load in self.loadlist:
+            if load.mode=='F':
+                loadMat[0]=loadMat[0]+load.Fx
+                loadMat[1]=loadMat[1]+load.Fy
+                loadMat[2]=loadMat[2]+load.Fz
+                loadMat[3]=loadMat[3]+load.Fz*(load.y-self.center[1])-load.Fx*(load.z-self.center[2])
+                loadMat[4]=loadMat[4]+load.Fx*(load.z-self.center[2])-load.Fz*(load.x-self.center[0])
+                loadMat[5]=loadMat[5]+load.Fy*(load.x-self.center[0])-load.Fx*(load.y-self.center[1])
+            elif load.mode=='M':
+                loadMat[0],loadMat[1],loadMat[2]=0,0,0
+                loadMat[3]=loadMat[3]+load.Mx
+                loadMat[4]=loadMat[4]+load.My
+                loadMat[5]=loadMat[5]+load.Mz
+     
     def print_anchors(self) -> None:
         for i in self.anchors:
             print("x={0},y={1},poles:{2}".format(i.x,i.y,i.poles))
