@@ -1,5 +1,6 @@
 import NonliearPack as nlp
 import scipy.optimize as opt
+import numpy as np
 from my_grid import *
 def calcV1(R):
     [x,y,theta]=R
