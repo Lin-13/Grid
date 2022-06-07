@@ -38,8 +38,8 @@ def calc_forces_mat(poles:list):
         if p.enable==False:
             continue
         [xi,yi,zi]=[cos(p.phi)*cos(p.theta),cos(p.phi)*sin(p.theta),sin(p.phi)]
-        mat=np.array([p.k],dtype=np.float64)*\
-            np.array([[xi**2,xi*yi,xi*zi],[xi*yi,yi**2,yi*zi],[xi*zi,yi*zi,zi**2]],dtype=np.float64)
+        mat=-np.array([p.k],dtype=np.float64)*\
+            np.array([[-xi**2,xi*yi,xi*zi],[xi*yi,yi**2,yi*zi],[xi*zi,yi*zi,zi**2]],dtype=np.float64)
         forces_mat.append(mat)
     return forces_mat    
 def CalR(F,mat,error=0.01):

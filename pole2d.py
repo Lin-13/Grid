@@ -40,7 +40,7 @@ def calc_forces_mat(poles:list):
         a11=p.k*np.cos(p.theta)**2
         a12=p.k*np.sin(p.theta)*np.sin(p.theta)
         a22=p.k*np.cos(p.theta)**2
-        mat=np.array([[a11,a12],[a12,a22]],dtype=np.float64)
+        mat=-np.array([[a11,a12],[a12,a22]],dtype=np.float64)
         forces_mat.append(mat)
     return forces_mat
 #计算二力杆组在受到外力时的移动
