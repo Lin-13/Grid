@@ -110,13 +110,13 @@ t:计算的下一帧到起始帧的时间
 b :衰减因子,使得速度为不衰减的exp(-bt)倍,默认b=0
 gead_step: 计算梯度时的步长
 '''    
-def next_frame_3d(Grid:gb3d.Grid,init_frame:np.array,t=0.01,b=0,step=0.001):
+def next_frame_3d(Grid:gb3d.Grid,init_frame:np.array,t=0.01,b=0,grad_step=0.001):
     if Grid.mode=='auto':
         raise Exception('you must use "setCenter()" and "setJ"to set the center of the grid')
     if np.shape(init_frame)[0]!=12:
         raise Exception('init_frame must be a list with 12 elements')
     next=init_frame
-    F=-gradV_2d(Grid,param=init_frame[0:6],step=step)
+    F=-gradV_2d(Grid,param=init_frame[0:6],step=grad_step)
     a=[0,0,0,0,0,0]
     a[0]=F[0]/Grid.m
     a[1]=F[1]/Grid.m
