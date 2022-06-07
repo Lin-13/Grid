@@ -1,6 +1,6 @@
 from typing import overload
 import numpy as np
-class pole:
+class Pole:
     E=0
     A=0
     L=0
@@ -33,7 +33,7 @@ def GenMatrix(poles:list):
 def calc_forces_mat(poles:list):
     forces_mat=list()
     for p in poles:
-        if type(p) is not pole:
+        if type(p) is not Pole:
             raise Exception("p is not a pole")        
         if p.enable==False:
             continue

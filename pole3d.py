@@ -3,7 +3,7 @@ import numpy as np
 import scipy
 from math import *
 #类和函数
-class pole:
+class Pole:
     E=0
     A=0
     L=0
@@ -33,7 +33,7 @@ def GenMatrix(poles):
 def calc_forces_mat(poles:list):
     forces_mat=list()
     for p in poles:
-        if type(p) is not pole:
+        if type(p) is not Pole:
             raise Exception("p is not a pole")
         if p.enable==False:
             continue

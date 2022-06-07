@@ -1,7 +1,7 @@
 import numpy as np
 from pole2d import *
 # 定义二力杆与刚体的约束
-class load:
+class Load:
     def __init__(self,m=0,x=0,y=0,theta=0,loadtype='F'):
         self.x=x
         self.y=y
@@ -18,7 +18,7 @@ class load:
         else:
             raise Exception('type accept F or M')
         return
-class anchor:
+class Anchor:
     
     # Brief: 反映二力杆的物理参数以及二力杆对于刚体的影响的矩阵列表
     # K : 二维弹力矩阵 F=K*x
@@ -64,21 +64,24 @@ class Grid:
     # 计算系数矩阵C,[Fx,Fy,Mc]=C*[x,y,theta]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
+            if type(anchor) is not Anchor:
+                raise Exception('anchor : type error')
             anchor.matrix.mat_G=np.array([[1,0],[0,1],[-anchor.y+self.center[1],anchor.x-self.center[0]]],dtype=np.float64)
         self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
         self.coef=np.sum(self.coef_matrix,axis=0)
-    def add_anchor(self,anchor:anchor):
+    def add_anchor(self,anchor:Anchor):
         self.anchors.append(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def add_load(self,load:load):
+    def add_load(self,load:Load):
         self.loadlist.append(load)   
-    def remove_load(self,load:load):
+    def remove_load(self,load:Load):
         self.loadlist.remove(load)   
-    def remove_anchor(self,anchor:anchor):
+    def remove_anchor(self,anchor:Anchor):
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
+######
     def __setCenter(self,x:float,y:float):
         self.center[0]=x
         self.center[1]=y
@@ -97,6 +100,8 @@ class Grid:
     def calc_loadMat(self): #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((3,1),dtype=np.float64)
         for load in self.loadlist:
+            if type(load) is not Load:
+                raise Exception('load : type error')
             if load.loadtype=='F':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy

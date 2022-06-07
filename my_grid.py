@@ -18,7 +18,7 @@ M1=gb2d.load(1,loadtype='M')
 grid1.add_load(F1)
 #grid1.add_load(M1)
 mat=grid1.calc_loadMat()#计算加载矩阵，[Fx,Fy,M]
-np.dot(np.linalg.inv(grid1.coef),mat)
+print(np.dot(np.linalg.inv(grid1.coef),mat))
 '''
 print(grid1.anchors[0].matrix.mat_K)
 print(grid1.anchors[0].matrix.mat_G)

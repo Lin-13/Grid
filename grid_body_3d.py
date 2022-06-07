@@ -1,7 +1,7 @@
 ## grid_body_3d.py
 import numpy as np
 import pole3d as pl3
-class load:
+class Load:
     def __init__(self,m,x=0,y=0,z=0,theta=0,phi=0,loadtype='F'):
         self.x=x
         self.y=y
@@ -24,7 +24,7 @@ class load:
             raise Exception('type accept F or M')
         return
 # 定义二力杆与刚体的约束
-class anchor:
+class Anchor:
     
     # Brief: 反映二力杆的物理参数以及二力杆对于刚体的影响的矩阵列表
     # K : 二维弹力矩阵 F=K*x
@@ -73,6 +73,8 @@ class Grid:
     # 计算系数矩阵C:[Fx,Fy,Fz,Mcx,Mcy,Mcz]=C*[x,y,z,alpha,beta,gamma]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
+            if type(anchor) is not Anchor:
+                raise Exception('anchor : type error')
             anchor.matrix.mat_G=\
                 np.array([[1,0,0],                                                #Fx
                         [0,1,0],                                                  #Fy
@@ -83,21 +85,21 @@ class Grid:
                         dtype=np.float64)
         self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
         self.coef=np.sum(self.coef_matrix,axis=0)
-    def add_anchor(self,anchor:anchor):
+    def add_anchor(self,anchor:Anchor):
         self.anchors.append(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def remove_anchor(self,anchor:anchor):
+    def remove_anchor(self,anchor:Anchor):
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
         
-    def add_load(self,load:load):
+    def add_load(self,load:Load):
         self.loadlist.append(load)   
-    def remove_load(self,load:load):
+    def remove_load(self,load:Load):
         self.loadlist.remove(load) 
         
-        
+######        
     def __setCenter(self,x:float,y:float,z:float):
         self.center[0]=x
         self.center[1]=y
@@ -106,11 +108,6 @@ class Grid:
         self.__clacCoefMatrix()
     def __setJ(self,Jyz:float,Jzx:float,Jxy:float):
         self.J=np.array([Jyz,Jzx,Jxy],dtype=np.float64)
-        self.__clacCoefMatrix()
-    def __setCenter(self,x:float,y:float,z:float):
-        self.center[0]=x
-        self.center[1]=y
-        self.center[2]=z
         self.__clacCoefMatrix()
     def __setM(self,M:float):
         self.m=M
@@ -124,7 +121,8 @@ class Grid:
     def calc_loadMat(self): #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((6,1),dtype=np.float64)
         for load in self.loadlist:
-            load.loadtype
+            if type(load) is not Load:
+                raise Exception('grid_body_3d:load : type error')
             if load.loadtype=='F':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
