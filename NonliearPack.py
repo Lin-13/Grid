@@ -116,7 +116,7 @@ def next_frame_3d(Grid:gb3d.Grid,init_frame:np.array,t=0.01,b=0,grad_step=0.001)
     if np.shape(init_frame)[0]!=12:
         raise Exception('init_frame must be a list with 12 elements')
     next=init_frame
-    F=-gradV_2d(Grid,param=init_frame[0:6],step=grad_step)
+    F=-gradV_3d(Grid,param=init_frame[0:6],step=grad_step)
     a=[0,0,0,0,0,0]
     a[0]=F[0]/Grid.m
     a[1]=F[1]/Grid.m
