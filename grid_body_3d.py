@@ -124,7 +124,7 @@ class Grid:
     def set(self,M:float,J:list,center:list):
         self.__setM(M)
         self.__setJ(J[0],J[1],J[2])
-        self.__setCenter(center[0],center[1])
+        self.__setCenter(center[0],center[1],center[2])
         self.mode='manual'
     def calc(self,arr:np.array):
         return np.dot(self.coef,arr)
