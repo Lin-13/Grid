@@ -114,11 +114,9 @@ class Grid:
         self.center[0]=x
         self.center[1]=y
         self.center[2]=z
-        self.mode='manual'
         self.__clacCoefMatrix()
     def __setJ(self,Jyz:float,Jzx:float,Jxy:float):
         self.J=np.array([Jyz,Jzx,Jxy],dtype=np.float64)
-        self.__clacCoefMatrix()
     def __setM(self,M:float):
         self.m=M
     def set(self,M:float,J:list,center:list):
@@ -137,7 +135,7 @@ class Grid:
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
                 loadMat[2]=loadMat[2]+load.Fz
-                loadMat[3]=loadMat[3]+load.Fz*(load.y-self.center[1])-load.Fx*(load.z-self.center[2])
+                loadMat[3]=loadMat[3]+load.Fz*(load.y-self.center[1])-load.Fy*(load.z-self.center[2])
                 loadMat[4]=loadMat[4]+load.Fx*(load.z-self.center[2])-load.Fz*(load.x-self.center[0])
                 loadMat[5]=loadMat[5]+load.Fy*(load.x-self.center[0])-load.Fx*(load.y-self.center[1])
             elif load.loadtype=='M':
