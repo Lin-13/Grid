@@ -82,7 +82,6 @@ class Grid:
     def __setCenter(self,x:float,y:float):
         self.center[0]=x
         self.center[1]=y
-        
         self.__clacCoefMatrix()
     def __setJ(self,J:float):
         self.J=J
