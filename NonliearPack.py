@@ -73,7 +73,7 @@ def gradV_3d(Grid:gb2d,x=0,y=0,z=0,alpha=0,beta=0,gamma=0,params=None,step=0.001
     for i in range(len(param)):
         param1=param
         param1[i]=param[i]+step
-        gradV[i]=((calcV_2d(Grid,param1[0],param1[1],param1[2])-V0)/step)
+        gradV[i]=((calcV_3d(Grid,param1[0],param1[1],param1[2])-V0)/step)
     return gradV    
         
 #根据初始状态计算下一个时间点的状态 init_frame=[x,y,z,vx,vy,vz]
@@ -116,7 +116,7 @@ def next_frame_3d(Grid:gb3d.Grid,init_frame:np.array,t=0.01,b=0,grad_step=0.001)
     if np.shape(init_frame)[0]!=12:
         raise Exception('init_frame must be a list with 12 elements')
     next=init_frame
-    F=-gradV_3d(Grid,param=init_frame[0:6],step=grad_step)
+    F=-gradV_3d(Grid,params=init_frame[0:6],step=grad_step)
     a=[0,0,0,0,0,0]
     a[0]=F[0]/Grid.m
     a[1]=F[1]/Grid.m
