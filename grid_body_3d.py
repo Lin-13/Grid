@@ -139,6 +139,8 @@ class Grid:
      
     def print_anchors(self):
         for i in self.anchors:
+            if type(i) is not Anchor:
+                raise Exception('grid_body_3d:anchor : type error')
             print("x={0},y={1},poles:{2}".format(i.x,i.y,i.poles))
     def print_coef(self):
         print(self.coef)
