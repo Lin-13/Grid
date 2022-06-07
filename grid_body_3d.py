@@ -56,9 +56,10 @@ class Grid:
         self.__clacCoefMatrix()
     def __init__(self):
         pass
-    def __calcCenter(self):
+    def __calcCenter(self):#仅在mode='auto'有效
         if self.mode=='auto':
             sum_x=0
+            sum_y=0
             sum_z=0
             cnt=0
             for i in self.anchors:
@@ -69,8 +70,6 @@ class Grid:
             self.center[0]=sum_x/cnt
             self.center[1]=sum_y/cnt
             self.center[2]=sum_z/cnt
-        else:
-            self.center[0],self.center[1],self.center[2]=0,0,0
     # 计算系数矩阵C:[Fx,Fy,Fz,Mcx,Mcy,Mcz]=C*[x,y,z,alpha,beta,gamma]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
@@ -97,19 +96,32 @@ class Grid:
         self.loadlist.append(load)   
     def remove_load(self,load:load):
         self.loadlist.remove(load) 
-    def setCenter(self,x:float,y:float,z:float):
+        
+        
+    def __setCenter(self,x:float,y:float,z:float):
         self.center[0]=x
         self.center[1]=y
         self.center[2]=z
         self.mode='manual'
         self.__clacCoefMatrix()
-    def setJ(self,Jyz:float,Jzx:float,Jxy:float) -> None:
+    def __setJ(self,Jyz:float,Jzx:float,Jxy:float):
         self.J=np.array([Jyz,Jzx,Jxy],dtype=np.float64)
-        self.mode='manual'
         self.__clacCoefMatrix()
-    def calc(self,arr:np.array)->np.array:
+    def __setCenter(self,x:float,y:float,z:float):
+        self.center[0]=x
+        self.center[1]=y
+        self.center[2]=z
+        self.__clacCoefMatrix()
+    def __setM(self,M:float):
+        self.m=M
+    def set(self,M:float,J:list,center:list):
+        self.__setM(M)
+        self.__setJ(J[0],J[1],J[2])
+        self.__setCenter(center[0],center[1])
+        self.mode='manual'
+    def calc(self,arr:np.array):
         return np.dot(self.coef,arr)
-    def calc_loadMat(self) -> np.array: #计算负载向量,[Fx,Fy,Mz]
+    def calc_loadMat(self): #计算负载向量,[Fx,Fy,Mz]
         loadMat=np.zeros((6,1),dtype=np.float64)
         for load in self.loadlist:
             load.loadtype
@@ -127,8 +139,8 @@ class Grid:
                 loadMat[5]=loadMat[5]+load.Mz
         return loadMat
      
-    def print_anchors(self) -> None:
+    def print_anchors(self):
         for i in self.anchors:
             print("x={0},y={1},poles:{2}".format(i.x,i.y,i.poles))
-    def print_coef(self) -> None:
+    def print_coef(self):
         print(self.coef)

@@ -61,8 +61,6 @@ class Grid:
                 cnt=cnt+1
             self.center[0]=sum_x/cnt
             self.center[1]=sum_y/cnt
-        else:
-            self.center[0],self.center[1]=0,0
     # 计算系数矩阵C,[Fx,Fy,Mc]=C*[x,y,theta]
     def __clacCoefMatrix(self):
         for anchor in self.anchors:
@@ -81,13 +79,20 @@ class Grid:
         self.anchors.remove(anchor)
         self.__calcCenter()
         self.__clacCoefMatrix()
-    def setCenter(self,x:float,y:float):
+    def __setCenter(self,x:float,y:float):
         self.center[0]=x
         self.center[1]=y
-        self.mode='manual'
+        
         self.__clacCoefMatrix()
-    def setJ(self,J:float):
+    def __setJ(self,J:float):
         self.J=J
+    def __setM(self,M:float):
+        self.m=M
+    def set(self,M:float,J:float,center:list):
+        self.__setM(M)
+        self.__setJ(J)
+        self.__setCenter(center[0],center[1])
+        self.mode='manual'
     def calc(self,arr:np.array):
         return np.dot(self.coef,arr)
     def calc_loadMat(self): #计算负载向量,[Fx,Fy,Mz]
