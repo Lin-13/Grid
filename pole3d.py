@@ -22,7 +22,7 @@ class Pole:
 def GenMatrix(poles):
     ret=np.zeros((3,3),dtype=np.float64)
     for p in poles:
-        if type(p) is not pole:
+        if type(p) is not Pole:
             raise Exception("p is not a pole")
         if p.enable==False:
             continue
