@@ -29,3 +29,25 @@ def GenMatrix(poles:list):
         sum3=sum3+p.k*np.sin(p.theta)**2
     ret=np.array([[sum1,sum2],[sum2,sum3]],dtype=np.float64)
     return ret
+#计算各个杆力的矩阵，并返回一个列表,第k个杆的力Fk=force_mat[k]*[x;y]
+def calc_forces_mat(poles:list):
+    forces_mat=list()
+    for p in poles:
+        if type(p) is not pole:
+            raise Exception("p is not a pole")        
+        if p.enable==False:
+            continue
+        a11=p.k*np.cos(p.theta)**2
+        a12=p.k*np.sin(p.theta)*np.sin(p.theta)
+        a22=p.k*np.cos(p.theta)**2
+        mat=np.array([[a11,a12],[a12,a22]],dtype=np.float64)
+        forces_mat.append(mat)
+    return forces_mat
+#计算二力杆组在受到外力时的移动
+def CalR(F,mat,error=0.01):
+    mat_inv=np.linalg.inv(mat)
+    cond=np.linalg.cond(mat,np.inf)
+    R_error=cond*error/(1-cond*error)
+    #print("cond(mat)={}".format(cond))
+    ret=np.dot(mat_inv,F)
+    return [ret,R_error]

@@ -22,12 +22,26 @@ class pole:
 def GenMatrix(poles):
     ret=np.zeros((3,3),dtype=np.float64)
     for p in poles:
+        if type(p) is not pole:
+            raise Exception("p is not a pole")
         if p.enable==False:
             continue
         [xi,yi,zi]=[cos(p.phi)*cos(p.theta),cos(p.phi)*sin(p.theta),sin(p.phi)]
         ret=ret+np.array([p.k],dtype=np.float64)*\
             np.array([[xi**2,xi*yi,xi*zi],[xi*yi,yi**2,yi*zi],[xi*zi,yi*zi,zi**2]],dtype=np.float64)
     return ret
+def calc_forces_mat(poles:list):
+    forces_mat=list()
+    for p in poles:
+        if type(p) is not pole:
+            raise Exception("p is not a pole")
+        if p.enable==False:
+            continue
+        [xi,yi,zi]=[cos(p.phi)*cos(p.theta),cos(p.phi)*sin(p.theta),sin(p.phi)]
+        mat=np.array([p.k],dtype=np.float64)*\
+            np.array([[xi**2,xi*yi,xi*zi],[xi*yi,yi**2,yi*zi],[xi*zi,yi*zi,zi**2]],dtype=np.float64)
+        forces_mat.append(mat)
+    return forces_mat    
 def CalR(F,mat,error=0.01):
     mat_inv=np.linalg.inv(mat)
     cond=np.linalg.cond(mat,np.inf)
