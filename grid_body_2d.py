@@ -1,5 +1,5 @@
 import numpy as np
-from pole2d import *
+import pole2d as pl2
 # 定义二力杆与刚体的约束
 class Load:
     def __init__(self,m=0,x=0,y=0,theta=0,loadtype='F'):
@@ -26,15 +26,24 @@ class Anchor:
     class Matrix:
         mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
         mat_G=np.zeros((3,2),dtype=np.float64)
-        def __init__(self) -> None:
+        mat_pole_K=None
+        def __init__(self):
             pass
+    count=0
     matrix=Matrix()
-    a=0
+    info=dict()#为其他算法提供空间
+    poles=list()
     def __init__(self,x:float,y:float,poles:list):
         self.x=x
         self.y=y
-        self.poles=poles
-        self.matrix.mat_K=GenMatrix(self.poles)
+        for pole in poles:
+            if type(pole) is not pl2.Pole:
+                raise Exception("pole:type error")
+            if pole.enable is True:
+                self.poles.append(pole)
+        self.matrix.mat_K=pl2.GenMatrix(self.poles)
+        self.mat_pole_K=pl2.calc_forces_mat(self.poles)
+        self.count=len(self.poles)
 
 class Grid:
     anchors=list()

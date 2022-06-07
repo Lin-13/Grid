@@ -13,7 +13,7 @@ class Load:
         if loadtype=='F':
             self.Fx=self.m*np.cos(self.phi)*np.cos(self.theta)
             self.Fy=self.m*np.cos(self.phi)*np.sin(self.theta)
-            self.Fx=self.m*np.sin(self.phi)
+            self.Fz=self.m*np.sin(self.phi)
             self.Mx,self.My,self.Mz=0,0,0
         elif loadtype=='M':
             self.Fx,self.Fy,self.Fz=0,0,0
@@ -32,15 +32,25 @@ class Anchor:
     class Matrix:
         mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
         mat_G=np.zeros((3,2),dtype=np.float64)
-        def __init__(self) -> None:
+        mat_pole_K=None
+        def __init__(self):
             pass
     matrix=Matrix()
+    count=0
+    config=dict()
+    poles=list()
     def __init__(self,x:float,y:float,z:float,poles:list):
         self.x=x
         self.y=y
         self.z=z
-        self.poles=poles
+        for pole in poles:
+            if type(pole) is not pl3.Pole:
+                raise Exception("pole3:type error")
+            if pole.enable is True:
+                self.poles.append(pole)
         self.matrix.mat_K=pl3.GenMatrix(self.poles)
+        self.mat_pole_K=pl3.calc_forces_mat(self.poles)
+        self.count=len(self.poles)
 
 class Grid:
     anchors=list()
