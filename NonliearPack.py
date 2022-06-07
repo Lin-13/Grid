@@ -73,7 +73,7 @@ def gradV_3d(Grid:gb2d,x=0,y=0,z=0,alpha=0,beta=0,gamma=0,params=None,step=0.001
     for i in range(len(param)):
         param1=param
         param1[i]=param[i]+step
-        gradV[i]=((calcV_3d(Grid,param1[0],param1[1],param1[2])-V0)/step)
+        gradV[i]=((calcV_3d(Grid,param1[0],param1[1],param1[2],param1[3],param1[4],param1[5])-V0)/step)
     return gradV    
         
 #根据初始状态计算下一个时间点的状态 init_frame=[x,y,z,vx,vy,vz]
