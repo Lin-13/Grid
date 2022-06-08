@@ -16,7 +16,7 @@ grid1.print_coef()
 F1=gb2d.Load(0.01,0,0,0,loadtype='F')
 M1=gb2d.Load(0.01,loadtype='M')
 grid1.add_load(F1)
-grid1.add_load(M1)
+#grid1.add_load(M1)
 mat=grid1.calc_loadMat()#计算加载矩阵，[Fx,Fy,M]
 '''
 print(mat)
