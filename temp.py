@@ -18,7 +18,7 @@ b=np.dot(np.linalg.inv(grid1.coef),grid1.calc_loadMat())
 print(b)#结果
 #动态仿真：
 #参数设置
-grid1.set(1,1,[5,0])                #设置质量，矩
+grid1.set(1,1,[0.5,0])                #设置质量，矩
 next_fram=np.array([0,0,0,0,0,0])   #初始状态
 it=2000                             #迭代次数
 delta_t=0.01                        #时间步长

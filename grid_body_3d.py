@@ -82,6 +82,7 @@ class Grid:
             self.center[2]=sum_z/cnt
     # 计算系数矩阵C:[Fx,Fy,Fz,Mcx,Mcy,Mcz]=C*[x,y,z,alpha,beta,gamma]
     def __clacCoefMatrix(self):
+        self.coef_matrix=list()
         for anchor in self.anchors:
             if type(anchor) is not Anchor:
                 raise Exception('anchor : type error')
@@ -93,7 +94,7 @@ class Grid:
                         [-anchor.z+self.center[2],0,anchor.x-self.center[0]],     #Mcy
                         [-anchor.y+self.center[1],anchor.x-self.center[0],0]],    #Mcz
                         dtype=np.float64)
-        self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
+            self.coef_matrix.append(np.dot(anchor.matrix.mat_G,np.dot(anchor.matrix.mat_K,anchor.matrix.mat_G.T)))
         self.coef=np.sum(self.coef_matrix,axis=0)
     def add_anchor(self,anchor:Anchor):
         self.anchors.append(anchor)

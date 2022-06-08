@@ -2,7 +2,7 @@ import scipy.stats as st
 import numpy as np
 import grid_body_2d as gb2d
 import grid_body_3d as gb3d
-#广义坐标下anchor中pole的受力
+#根据广义坐标计算anchor中pole的受力
 def calc_pole_force_2d(grid:gb2d.Grid,x:float,y:float,theta:float):
     r=np.array([[x],[y],[theta]])#广义坐标向量
     for anchor in grid.anchors:
