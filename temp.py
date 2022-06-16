@@ -3,25 +3,33 @@ import scipy.optimize as opt
 import numpy as np
 import matplotlib.pyplot as plt
 from my_grid import *
+import GridPlotPack as gp
 import tqdm
 def calcV1(R):
     [x,y,theta]=R
     return nlp.calcV_2d(grid1,x,y,theta)
 print("-----------------------------------------------------")
 #非线性方法
+grid1.set(10,100,[0.5,0])              #设置质量，矩
 print("能量法")
 a=opt.fmin(calcV1,[0,0,0])
 print(a)                            #结果
 #线性方法
-print("线性方法")
-b=np.dot(np.linalg.inv(grid1.coef),grid1.calc_loadMat())
-print(b)#结果
+print("线性方法A*x=b")
+print("A=")
+print(grid1.coef)
+print("b=")
+print(grid1.calc_loadMat())
+x=np.dot(np.linalg.inv(grid1.coef),grid1.calc_loadMat())
+print("x=")
+print(x)#结果
 #动态仿真：
 #参数设置
-grid1.set(10,10,[0.5,0])              #设置质量，矩
+
+#gp.plot_grid_2d(grid1)
 next_fram=np.array([0,0,0,0,0,0])   #初始状态
-it=10000                             #迭代次数
-delta_t=0.01                        #时间步长
+it=100000                             #迭代次数
+delta_t=0.001                        #时间步长
 frames=np.zeros((it+1,6))
 b=0.1                                 #衰减因子
 frames[0]=next_fram

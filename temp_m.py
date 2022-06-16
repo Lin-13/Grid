@@ -25,7 +25,7 @@ next_fram=np.zeros((12))
 it=10000                             #迭代次数
 delta_t=0.1                         #时间步长
 frames=np.zeros((it+1,12))
-b=10                                 #衰减因子
+b=4                                 #衰减因子
 frames[0]=next_fram
 #开始迭代仿真
 bar=tqdm.tqdm(total=it)#进度条

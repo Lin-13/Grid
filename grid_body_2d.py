@@ -18,24 +18,25 @@ class Load:
         else:
             raise Exception('type accept F or M')
         return
+
+class Matrix:
+    def __init__(self):
+        self.mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
+        self.mat_G=np.zeros((3,2),dtype=np.float64)
+        self.mat_pole_K=None
 class Anchor:
     
     # Brief: 反映二力杆的物理参数以及二力杆对于刚体的影响的矩阵列表
     # K : 二维弹力矩阵 F=K*x
     # G :反映二力杆和刚体的几何联系的矩阵
-    class Matrix:
-        mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
-        mat_G=np.zeros((3,2),dtype=np.float64)
-        mat_pole_K=None
-        def __init__(self):
-            pass
-    count=0
-    matrix=Matrix()
-    info=dict()#为其他算法提供空间
-    poles=list()
+
     def __init__(self,x:float,y:float,poles:list):
         self.x=x
         self.y=y
+        self.count=0
+        self.matrix=Matrix()        
+        self.info=dict()#为其他算法提供空间
+        self.poles=list()
         for pole in poles:
             if type(pole) is not pl2.Pole:
                 raise Exception("pole:type error")
@@ -46,18 +47,26 @@ class Anchor:
         self.count=len(self.poles)
 
 class Grid:
-    anchors=list()
-    loadlist=list()#负载
-    center=[0,0]
-    m=0
-    J=0
-    mode='auto'
-    coef_matrix=list()
+
     def __init__(self,anchors:list):
+        self.anchors=list()
+        self.loadlist=list()#负载
+        self.center=[0,0]
+        self.m=0
+        self.J=0
+        self.mode='auto'
+        self.coef_matrix=list()
         self.anchors=anchors
         self.__calcCenter()
         self.__clacCoefMatrix()
     def __init__(self):
+        self.anchors=list()
+        self.loadlist=list()#负载
+        self.center=[0,0]
+        self.m=0
+        self.J=0
+        self.mode='auto'
+        self.coef_matrix=list()
         pass
     def __calcCenter(self):
         if self.mode=='auto':
@@ -115,7 +124,7 @@ class Grid:
             if load.loadtype=='F':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy
-                loadMat[2]=(load.x-self.center[0])*load.Fy-(load.y-self.center[1])*load.Fx
+                loadMat[2]=loadMat[2]+(load.x-self.center[0])*load.Fy-(load.y-self.center[1])*load.Fx
             elif load.loadtype=='M':
                 loadMat[0]=loadMat[0]+load.Fx
                 loadMat[1]=loadMat[1]+load.Fy

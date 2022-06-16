@@ -4,13 +4,6 @@ import scipy
 from math import *
 #类和函数
 class Pole:
-    E=0
-    A=0
-    L=0
-    theta=0
-    phi=0
-    k=0
-    enable=True
     def __init__(self,E,A,L,theta,phi,enable=True):
         self.theta=theta
         self.E=E

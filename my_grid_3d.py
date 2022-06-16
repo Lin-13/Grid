@@ -18,7 +18,7 @@ grid1.add_anchor(gb3d.Anchor(0,0,1,[pole1,pole2,pole3,pole4,pole5,pole6]))
 
 #grid1.print_anchors()
 #grid1.print_coef()
-F1=gb3d.Load(1,0,0,0,0,pi/2,loadtype='F')
+F1=gb3d.Load(0.001,0,0,0,0,pi/2,loadtype='F')
 M1=gb3d.Load(0.000001,x=1,phi=0,loadtype='M')
 grid1.add_load(F1)
 grid1.add_load(M1)

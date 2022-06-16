@@ -1,12 +1,6 @@
 from typing import overload
 import numpy as np
 class Pole:
-    E=0
-    A=0
-    L=0
-    theta=0
-    k=0
-    enable=True
     def __init__(self,theta,E=1,A=1,L=1,enable=True):
         self.theta=theta
         self.E=E

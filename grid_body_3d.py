@@ -23,26 +23,25 @@ class Load:
         else:
             raise Exception('type accept F or M')
         return
+class Matrix:
+    def __init__(self):
+        self.mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
+        self.mat_G=np.zeros((3,2),dtype=np.float64)
+        self.mat_pole_K=None
 # 定义二力杆与刚体的约束
 class Anchor:
     
     # Brief: 反映二力杆的物理参数以及二力杆对于刚体的影响的矩阵列表
     # K : 二维弹力矩阵 F=K*x
     # G :反映二力杆和刚体的几何联系的矩阵
-    class Matrix:
-        mat_K=np.array([[0,0],[0,0]],dtype=np.float64)
-        mat_G=np.zeros((3,2),dtype=np.float64)
-        mat_pole_K=None
-        def __init__(self):
-            pass
-    matrix=Matrix()
-    count=0
-    config=dict()
-    poles=list()
     def __init__(self,x:float,y:float,z:float,poles:list):
         self.x=x
         self.y=y
         self.z=z
+        self.matrix=Matrix()
+        self.count=0
+        self.config=dict()
+        self.poles=list()
         for pole in poles:
             if type(pole) is not pl3.Pole:
                 raise Exception("pole3:type error")
@@ -53,19 +52,25 @@ class Anchor:
         self.count=len(self.poles)
 
 class Grid:
-    anchors=list()
-    loadlist=list()
-    center=[0,0,0]
-    m=0
-    J=np.zeros((1,3))
-    mode='auto'
-    coef_matrix=list()
     def __init__(self,anchors:list):
+        self.anchors=list()
+        self.loadlist=list()
+        self.center=[0,0,0]
+        self.m=0
+        self.J=np.zeros((1,3))
+        self.mode='auto'
+        self.coef_matrix=list()
         self.anchors=anchors
         self.__calcCenter()
         self.__clacCoefMatrix()
     def __init__(self):
-        pass
+        self.anchors=list()
+        self.loadlist=list()
+        self.center=[0,0,0]
+        self.m=0
+        self.J=np.zeros((1,3))
+        self.mode='auto'
+        self.coef_matrix=list()
     def __calcCenter(self):#仅在mode='auto'有效
         if self.mode=='auto':
             sum_x=0

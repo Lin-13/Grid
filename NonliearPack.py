@@ -127,7 +127,8 @@ def next_frame_2d(Grid:gb2d.Grid,init_frame:np.array,t=0.01,b=0,grad_step=0.001)
     for i in range(3):
         next[i+3]=next[i+3]+a[i]*t  #更新速度 v=v+a*t
         next[i+3]=next[i+3]*np.exp(-b*t)
-        next[i]=next[i]+(next[i+3]+init_frame[i+3])*t/2     #更新位移s=s0+(v0+v1)/2*t
+        next[i]=next[i]+(next[i+3]+init_frame[i+3])*t/2    #更新位移s=s0+(v0+v1)/2*t
+        #该部分改为next[i]=init_frame[i]+(next[i+3]+init_frame[i+3])*t/2时存在较大差异
     return next
 #进行动态计算，3d
 '''
@@ -155,5 +156,5 @@ def next_frame_3d(Grid:gb3d.Grid,init_frame:np.array,t=0.01,b=0,grad_step=0.001)
     for i in range(6):
         next[i+6]=next[i+6]+a[i]*t  #更新速度 v=v+a*t
         next[i+6]=next[i+6]*np.exp(-b*t)
-        next[i]=init_frame[i]+(next[i+6]+init_frame[i+6])*t/2     #更新位移s=s0+(v0+v1)/2*t
+        next[i]=next[i]+(next[i+6]+init_frame[i+6])*t/2     #更新位移s=s0+(v0+v1)/2*t
     return next
