@@ -28,13 +28,13 @@ print(x)#结果
 
 #gp.plot_grid_2d(grid1)
 next_fram=np.array([0,0,0,0,0,0])   #初始状态
-it=100000                             #迭代次数
-delta_t=0.001                        #时间步长
+it=20000                             #迭代次数
+delta_t=0.01                        #时间步长
 frames=np.zeros((it+1,6))
 b=0.1                                 #衰减因子
 frames[0]=next_fram
 #开始迭代仿真
-print("开始动力学迭代仿真")
+print("开始动力学迭代仿真,it:{},delta_t:{},init:{},b:{}".format(it,delta_t,next_fram,b))
 bar=tqdm.tqdm(total=it)
 for i in range(it):
     next_fram=nlp.next_frame_2d(grid1,next_fram,t=delta_t,b=b,grad_step=0.001)
