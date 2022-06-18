@@ -8,7 +8,7 @@ class Pole:
         self.L=L
         self.k=E*A/L
         self.enable=enable
-    def __repr__(self) -> str:
+    def __repr__(self):
         return 'pole(theta=%f,E=%f,A=%f,L=%f,enable=%s)'%(self.theta,self.E,self.A,self.L,self.enable)
     
 def GenMatrix(poles:list):

@@ -28,10 +28,10 @@ print(x)#结果
 
 #gp.plot_grid_2d(grid1)
 next_fram=np.array([0,0,0,0,0,0])   #初始状态
-it=20000                             #迭代次数
+it=200000                             #迭代次数
 delta_t=0.01                        #时间步长
 frames=np.zeros((it+1,6))
-b=0.1                                 #衰减因子
+b=0.01                                 #衰减因子
 frames[0]=next_fram
 #开始迭代仿真
 print("开始动力学迭代仿真,it:{},delta_t:{},init:{},b:{}".format(it,delta_t,next_fram,b))
